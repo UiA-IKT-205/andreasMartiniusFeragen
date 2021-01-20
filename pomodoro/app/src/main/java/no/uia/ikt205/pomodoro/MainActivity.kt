@@ -20,11 +20,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn90min:Button
     lateinit var btn120min:Button
 
-    //Default value
+    //Default value in ms for countdown
     var timeToCountDownInMs = 5000L
     val timeTicks = 1000L
 
-    var counting = false
+    // Is false when the counter is not counting
+    var isCounting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,34 +54,36 @@ class MainActivity : AppCompatActivity() {
 
         startButton = findViewById<Button>(R.id.startCountdownButton)
         startButton.setOnClickListener(){
-            if (!counting) {
+            if (!isCounting) {
                 startCountDown(it)
             }
-
-            counting = true
+            startButton.isEnabled = false
+            isCounting = true
         }
     }
 
     fun updateCount(ms:Long){
         timeToCountDownInMs = ms
-        if(!counting) {
+        if(!isCounting) {
             updateCountDownDisplay(ms)
         }
 
     }
 
     fun startCountDown(v: View){
-
         timer = object : CountDownTimer(timeToCountDownInMs,timeTicks) {
             override fun onFinish() {
                 Toast.makeText(this@MainActivity,"Arbeidsøkt er ferdig", Toast.LENGTH_SHORT).show()
-                counting = false
+                startButton.isEnabled = true
+                isCounting = false
             }
 
             override fun onTick(millisUntilFinished: Long) {
                updateCountDownDisplay(millisUntilFinished)
             }
         }
+
+
 
         timer.start()
     }

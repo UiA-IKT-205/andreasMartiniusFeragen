@@ -13,83 +13,69 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var timer:CountDownTimer
     lateinit var startButton:Button
-    lateinit var coutdownDisplay:TextView
-
-    lateinit var btn30min:Button
-    lateinit var btn60min:Button
-    lateinit var btn90min:Button
-    lateinit var btn120min:Button
+    lateinit var countdownDisplay:TextView
 
     //Default value in ms for countdown
     var timeToCountDownInMs = 5000L
     val timeTicks = 1000L
 
-    // Is false when the counter is not counting
-    var isCounting = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        coutdownDisplay = findViewById<TextView>(R.id.countDownView)
 
-        btn30min = findViewById(R.id.btn30)
-        btn30min.setOnClickListener() {
-            updateCount(3000L)
+        // Countdown text
+        countdownDisplay = findViewById<TextView>(R.id.countDownView)
+
+        // Countdown time buttons
+        val setTimeDurationButtons = listOf<Button>(
+                findViewById<Button>(R.id.btn30),
+                findViewById<Button>(R.id.btn60),
+                findViewById<Button>(R.id.btn90),
+                findViewById<Button>(R.id.btn120)
+        )
+
+        setTimeDurationButtons.forEachIndexed { index, button ->
+            button.setOnClickListener(){
+                if(startButton.isEnabled) {
+                    val newCountdownTime:Long = (index+1) * 3000L
+                    updateCountDownTime(newCountdownTime)
+                }
+            }
         }
 
-        btn60min = findViewById(R.id.btn60)
-        btn60min.setOnClickListener() {
-            updateCount(6000L)
-        }
-
-        btn90min = findViewById(R.id.btn90)
-        btn90min.setOnClickListener() {
-            updateCount(9000L)
-        }
-
-        btn120min = findViewById(R.id.btn120)
-        btn120min.setOnClickListener() {
-            updateCount(12000L)
-        }
-
+        // Start button
         startButton = findViewById<Button>(R.id.startCountdownButton)
         startButton.setOnClickListener(){
-            if (!isCounting) {
+            if (startButton.isEnabled) {
                 startCountDown(it)
             }
             startButton.isEnabled = false
-            isCounting = true
         }
     }
 
-    fun updateCount(ms:Long){
+    fun updateCountDownTime(ms:Long){
         timeToCountDownInMs = ms
-        if(!isCounting) {
+        if(startButton.isEnabled) {
             updateCountDownDisplay(ms)
         }
-
     }
 
     fun startCountDown(v: View){
-        timer = object : CountDownTimer(timeToCountDownInMs,timeTicks) {
+        timer = object : CountDownTimer(timeToCountDownInMs, timeTicks) {
             override fun onFinish() {
                 Toast.makeText(this@MainActivity,"Arbeidsøkt er ferdig", Toast.LENGTH_SHORT).show()
-                startButton.isEnabled = true
-                isCounting = false
+                v.isEnabled = true
             }
-
             override fun onTick(millisUntilFinished: Long) {
-               updateCountDownDisplay(millisUntilFinished)
+                updateCountDownDisplay(millisUntilFinished)
             }
         }
-
-
-
+        v.isEnabled = false
         timer.start()
     }
 
     fun updateCountDownDisplay(timeInMs:Long){
-        coutdownDisplay.text = millisecondsToDescriptiveTime(timeInMs)
+        countdownDisplay.text = millisecondsToDescriptiveTime(timeInMs)
     }
 
 }

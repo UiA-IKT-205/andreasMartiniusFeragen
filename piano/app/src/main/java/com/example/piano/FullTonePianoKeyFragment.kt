@@ -12,9 +12,8 @@ import com.example.piano.databinding.FragmentPianoLayputBinding
 import kotlinx.android.synthetic.main.fragment_full_tone_piano_key.view.*
 
 class FullTonePianoKeyFragment : Fragment() {
-    private var _binding: FragmentFullTonePianoKeyBinding? = null
-    // double bang, forced unboxing, krever at _binding finnes
-    private val binding get() = _binding!!
+    private lateinit var _binding: FragmentFullTonePianoKeyBinding
+    private val binding get() = _binding
     private lateinit var note:String
 
     // Functions that takes a string and returners it
@@ -29,8 +28,8 @@ class FullTonePianoKeyFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):
-            View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentFullTonePianoKeyBinding.inflate(inflater)
         val view = binding.root
 
@@ -50,7 +49,7 @@ class FullTonePianoKeyFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(note: String) =
-            FullTonePianoKeyFragment().apply {
+                FullTonePianoKeyFragment().apply {
                 arguments = Bundle().apply {
                     putString("NOTE", note)
                 }

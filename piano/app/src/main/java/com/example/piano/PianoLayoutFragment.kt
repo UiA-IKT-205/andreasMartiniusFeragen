@@ -6,66 +6,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.piano.databinding.FragmentPianoLayputBinding
-import kotlinx.android.synthetic.main.activity_main.view.*
-import kotlinx.android.synthetic.main.fragment_full_tone_piano_key.view.*
 import kotlinx.android.synthetic.main.fragment_piano_layput.view.*
 
 
 class PianoLayoutFragment : Fragment() {
-
     private var _binding:FragmentPianoLayputBinding? = null
     // double bang, forced unboxing, krever at _binding finnes
     private val binding get() = _binding!!
 
-    private val fullTones = listOf("C", "D", "E", "F", "G", "A", "B", "C2", "D2", "E2", "F2", "G2")
-    private val halfTones = listOf("C#", "D#", "?", "F#", "G#", "A#", "?", "C2#", "D2#", "?", "F2#", "G2#")
+    private val whiteKeyTones = listOf("C", "D", "E", "F", "G", "A", "B", "C2", "D2", "E2", "F2", "G2")
+    private val blackKeyTones = listOf("C#", "D#", "?", "F#", "G#", "A#", "?", "C2#", "D2#", "?", "F2#", "G2#")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):
-            View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentPianoLayputBinding.inflate(layoutInflater)
         val view = binding.root
 
-        val fm = childFragmentManager
-        val ft = fm.beginTransaction()
+        val fragmentManager = childFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
 
-        for (tone in fullTones) {
-            val fullTonePianoKey = FullTonePianoKeyFragment.newInstance(tone)
-
-            fullTonePianoKey.onKeyDown = {
-                println("Piano key down $it")
-            }
-
-            fullTonePianoKey.onKeyUp = {
-                println("Piano key up $it")
-            }
-
-            ft.add(view.pianoKeys.id, fullTonePianoKey, "note_$tone")
+        for (tone in whiteKeyTones) {
+            val whiteKey = WhiteKeyFragment.newInstance(tone)
+            fragmentTransaction.add(view.whiteKeysLayout.id, whiteKey, "note_$tone")
         }
 
 
-
-        for (tone in halfTones) {
-            if (tone == "?") {
-                println("Tone is $tone")
+        for (tone in blackKeyTones) {
+            if (tone == "?") {  // Adds spacing where there shouldn't be a black key
+                val emptyHalfTonePianoKey = SpacingKey.newInstance()
+                fragmentTransaction.add(view.blackKeysLayout.id, emptyHalfTonePianoKey, "note_$tone")
+            } else {
+                val blackKey = BlackKeyFragment.newInstance(tone)
+                fragmentTransaction.add(view.blackKeysLayout.id, blackKey, "note_$tone")
             }
-
-            val halfTonePianoKey = HalfTonePianoFragment.newInstance(tone)
-
-            halfTonePianoKey.onKeyDown = {
-                println("Piano key down $it")
-            }
-
-            halfTonePianoKey.onKeyUp = {
-                println("Piano key up $it")
-            }
-
-            ft.add(view.halfpianoKeys.id, halfTonePianoKey, "note_$tone")
         }
-        ft.commit()
+        fragmentTransaction.commit()
         return view
     }
 }

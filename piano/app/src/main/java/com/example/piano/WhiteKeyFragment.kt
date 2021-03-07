@@ -1,22 +1,20 @@
 package com.example.piano
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import com.example.piano.databinding.FragmentWhiteKeyBinding
 import kotlinx.android.synthetic.main.fragment_white_key.view.*
 
+
 class WhiteKeyFragment : Fragment() {
+    private val LOG_TAG: String = "piano:WhiteKeyFragment"
     private lateinit var _binding: FragmentWhiteKeyBinding
     private val binding get() = _binding
     private lateinit var note: String
 
-    private val onKeyUp: (note:String) -> Unit = { println("Piano key Up $it") }
-    private val onKeyDown: (note:String) -> Unit = { println("Piano key down $it") }
+    lateinit var onKeyDown: (note:String) -> Unit
+    lateinit var onKeyUp: (note:String) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +22,6 @@ class WhiteKeyFragment : Fragment() {
             note = it.getString("NOTE") ?: "?"
         }
     }
-
 
     override fun onCreateView(
             inflater: LayoutInflater,

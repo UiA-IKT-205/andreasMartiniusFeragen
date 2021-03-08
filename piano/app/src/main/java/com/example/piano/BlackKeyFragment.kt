@@ -16,8 +16,9 @@ class BlackKeyFragment : Fragment() {
     private val binding get() = _binding
     private lateinit var note: String
 
-    private val onKeyUp: (note:String) -> Unit = { println("Piano key Up $it") }
-    private val onKeyDown: (note:String) -> Unit = { println("Piano key down $it") }
+    lateinit var onKeyDown: (note:String) -> Unit
+    lateinit var onKeyUp: (note:String) -> Unit
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class BlackKeyFragment : Fragment() {
         _binding = FragmentBlackKeyBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        view.whiteKey.setOnTouchListener(object: View.OnTouchListener{
+        view.blackKey.setOnTouchListener(object: View.OnTouchListener{
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {this@BlackKeyFragment.onKeyDown.invoke(note)}

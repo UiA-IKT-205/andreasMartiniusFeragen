@@ -1,6 +1,7 @@
 package com.example.piano
 
 import Note
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.net.toUri
 import com.example.piano.databinding.FragmentPianoLayputBinding
 import kotlinx.android.synthetic.main.fragment_piano_layput.view.*
 import java.io.File
@@ -28,6 +30,7 @@ class PianoLayoutFragment : Fragment() {
 
     private var scoreSheet: MutableList<Note> = mutableListOf<Note>()
 
+    var onSave:((file:Uri) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +132,8 @@ class PianoLayoutFragment : Fragment() {
                 writer.write(content)
                 Log.d(LOG_TAG, "scoreSheet saved: $content")
             }
+
+            this.onSave?.invoke(file.toUri())
         } else {
             Toast.makeText(activity,"File already exists", Toast.LENGTH_SHORT).show()
         }
